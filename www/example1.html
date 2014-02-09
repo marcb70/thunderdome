@@ -21,7 +21,7 @@
   <body>
     <div id="viz"></div>
     <script>
-
+var count = 0;
 function name(d) { return d.name; }
 function group(d) { return d.group; }
 
@@ -85,6 +85,59 @@ force.on('tick', function() {
         .attr('d', function(d) { return 'M'+d.join(',')+'Z'; });
 });
 
+var duration = 750,
+    timer = setInterval(update, duration);
+
+function update(){
+
+    if(count > 5) return clearInterval(timer);
+    count++;
+    d3.json('miserables.json', function(err, data) {
+    console.log(data.nodes);
+    var nodesToUse = data.nodes.slice(0, count);
+    console.log(nodesToUse);
+    nodesToUse.forEach(function(d, i) {
+        d.id = i;
+    });
+
+    var linksToUse =[];
+        data.links.forEach(function(d, i){
+            if(d.source <= count && d.target <= count){
+                linksToUse.push(d);
+            }
+        });
+
+    link = svg.selectAll('.link')
+        .data( linksToUse )
+      .enter().append('line')
+        .attr('class', 'link')
+        .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+    node = svg.selectAll('.node')
+        .data( nodesToUse )
+      .enter().append('g')
+        .attr('title', name)
+        .attr('class', 'node')
+
+    node.append('circle')
+        .attr('r', 30)
+        .attr('fill', colorByGroup)
+        .attr('fill-opacity', 0.5);
+
+    node.append('circle')
+        .attr('r', 4)
+        .attr('stroke', 'black');
+
+    force
+        .nodes( nodesToUse )
+        .links( linksToUse )
+        .start()
+        .stop();
+});
+
+}
+
+/*
 d3.json('miserables.json', function(err, data) {
 
     data.nodes.forEach(function(d, i) {
@@ -116,7 +169,7 @@ d3.json('miserables.json', function(err, data) {
         .nodes( data.nodes )
         .links( data.links )
         .start();
-});
+});*/
 
     </script>
   </body>

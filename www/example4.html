@@ -1,5 +1,40 @@
-var width = $("#topContent").width() * .70,
-    height = $("#topContent").height();
+
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<style>
+
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+html{
+  height: 100%;
+  width: 100%;
+}
+svg{
+  opacity: 50%;
+}
+.node {
+  fill: #000;
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.node.color1 { fill: #1f77b4; }
+.node.color2 { fill: #ff7f0e; }
+.node.color3 { fill: #2ca02c; }
+
+</style>
+<body>
+<script src="//code.jquery.com/jquery-latest.min.js"
+        type="text/javascript"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = $("html").width(),
+    height = $("html").height();
 var color = d3.scale.category10();
 
 var nodes = [],
@@ -66,14 +101,9 @@ function start() {
   link.exit().remove();
   
   node = node.data(force.nodes(), function(d) { return d.id;});
-  node.enter().append("circle")
-  .attr("class", function(d) { 
+  node.enter().append("circle").attr("class", function(d) { 
     var randColor = Math.floor(Math.random() * 3 + 1);
-    return "node " + d.id + " color"+randColor 
-  })
-  .attr("r", function(){
-    return Math.floor(Math.random() * (15-10 +1)) + 10;
-  });
+    return "node " + d.id + " color"+randColor }).attr("r", 15);
   node.exit().remove();
 
   force.start();
@@ -88,3 +118,6 @@ function tick() {
       .attr("x2", function(d) { return d.target.x; })
       .attr("y2", function(d) { return d.target.y; });
 }
+
+</script>
+</html>
